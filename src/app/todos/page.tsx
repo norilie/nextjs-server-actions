@@ -10,21 +10,12 @@ import {
 } from '@mui/material'
 import { PrismaClient } from '@prisma/client'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
-import { revalidatePath } from 'next/cache'
+import TodoForm from '@/components/todo-form'
 const prisma = new PrismaClient()
 
 export default async function TodosPage() {
   const todos = await prisma.todos.findMany()
-  const addTodo = async (formData: FormData) => {
-    'use server'
-    const content = formData.get('content')
-    await prisma.todos.create({
-      data: {
-        content: content as string,
-      },
-    })
-    revalidatePath('/todos')
-  }
+
   return (
     <>
       <Stack>
@@ -34,25 +25,7 @@ export default async function TodosPage() {
           </Typography>
         </Box>
         <Box display='flex' justifyContent='center' alignItems='center' sx={{ mb: 2 }}>
-          <form action={addTodo}>
-            <Stack>
-              <TextField
-                id='basic'
-                type='text'
-                name='content'
-                label='input todo'
-                placeholder='Write your todo...'
-                variant='outlined'
-                size='small'
-                required
-                fullWidth
-                sx={{ m: 1, width: '30ch' }}
-              />
-              <Button variant='contained' sx={{ m: 1 }} type='submit'>
-                Add
-              </Button>
-            </Stack>
-          </form>
+          <TodoForm />
         </Box>
         <Box display='flex' justifyContent='center' alignItems='center'>
           <List>
